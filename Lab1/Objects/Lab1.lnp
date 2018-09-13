@@ -1,0 +1,3 @@
+".\Objects\src1.obj" 
+TO ".\Objects\Lab1" 
+PRINT(".\Listings\Lab1.m51") CODE( 0X0000-0X0FFF )

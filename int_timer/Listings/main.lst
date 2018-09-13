@@ -1,0 +1,241 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 05/20/2018 16:26:57 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\main.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE main.a51 SET(SMALL) DEBUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\main
+                      .obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+  001F                 1     timers_off      EQU 00011111b 
+  000E                 2     TC0_mode1_cnt   EQU 00001110b ;counter mode
+  0001                 3     TC0_mode1_tmr   EQU 00000001b ;timer mode 0
+  0010                 4     TC1_mode1_tmr   EQU 00010000b ;timer mode 1
+  0050                 5     timers_on       EQU 01010000b
+                       6     
+0000                   7     ORG     0
+0000 803D              8             JMP start
+000B                   9     org     0Bh
+000B 01F8             10             JMP     MYINT   
+                      11             
+0030                  12     ORG     30h     
+0030                  13     Columns:
+0030 06               14             DB              6
+0031 05               15             DB              5
+0032 03               16             DB              3
+0033                  17     Codes:
+0033 06               18             DB              00000110b ;1
+0034 66               19             DB              01100110b ;4
+0035 07               20             DB              00000111b ;7
+0036 80               21             DB              10000000b ;*
+                      22             
+0037 5B               23             DB              01011011b ;2
+0038 6D               24             DB              01101101b ;5
+0039 7F               25             DB              01111111b ;8    
+003A 3F               26             DB              00111111b ;0
+                      27                     
+003B 4F               28             DB              01001111b ;3
+003C 7D               29             DB              01111101b ;6
+003D 6F               30             DB              01101111b ;9
+003E 76               31             DB              01110110b ;#
+                      32     
+003F                  33     start:
+003F 75A882           34             MOV     IE, #10000010b  ;IE
+0042 75B802           35             MOV     IP, #00000010b  ;IP
+0045 D288             36             SETB    IT0
+0047 758120           37             MOV     SP, #20h
+004A 750800           38             MOV     8, #0
+004D 750900           39             MOV     9, #0
+0050 11E8             40             CALL    PROGRAM_TIMER
+0052                  41     infcycle:
+0052 1156             42             CALL    ASKKEYBOARD
+0054 80FC             43             JMP     infcycle
+                      44     
+0056                  45     ASKKEYBOARD:
+0056 C0E0             46             PUSH    ACC
+0058 C001             47             PUSH    1
+005A C002             48             PUSH    2
+005C                  49     initiate_columnask:     
+                      50             
+005C 7903             51             MOV     R1, #3
+005E 7400             52             MOV     A, #0
+0060                  53     columnask:
+0060 900030           54             MOV     DPTR, #Columns
+0063 C0E0             55             PUSH    ACC
+0065 93               56             MOVC    A, @A+DPTR
+0066 758390           57             MOV     DPH, #90h
+A51 MACRO ASSEMBLER  MAIN                                                                 05/20/2018 16:26:57 PAGE     2
+
+0069 F582             58             MOV     DPL, A
+006B                  59     read_again:     
+006B E0               60             MOVX    A, @DPTR
+006C F8               61             MOV     R0, A
+                      62             
+006D 11D5             63             CALL    ANTI_BOUNCE_DELAY
+006F E0               64             MOVX    A, @DPTR
+0070 B50006           65             CJNE    A, 0, carry_on
+                      66     
+0073 D0E0             67             POP     ACC
+0075 C0E0             68             PUSH    ACC
+0077 1187             69             CALL    TAKE_BUTTON_CODE
+                      70             
+0079                  71     carry_on:
+0079 D0E0             72             POP     ACC
+007B 04               73             INC     A
+                      74     
+007C D9E2             75             DJNZ    R1, columnask
+007E 80DC             76             JMP     initiate_columnask
+                      77             
+0080 D002             78             POP     2
+0082 D001             79             POP     1
+0084 D0E0             80             POP     ACC
+0086 22               81     RET
+                      82     
+0087                  83     TAKE_BUTTON_CODE:
+0087 C002             84             PUSH    2
+0089 C001             85             PUSH    1
+008B C082             86             PUSH    DPL
+008D C083             87             PUSH    DPH
+                      88             
+008F AA00             89             MOV     R2, 0
+0091 53000F           90             ANL     0, #0Fh
+0094 B80F0B           91             CJNE    R0, #0Fh, initiate_find_symbol
+0097                  92     end_tkb:
+                      93     
+0097 A802             94             MOV     R0, 2
+                      95     
+0099 D083             96             POP     DPH
+009B D082             97             POP     DPL
+009D D001             98             POP     1
+009F D002             99             POP     2
+00A1 22              100     RET
+00A2                 101     initiate_find_symbol:
+00A2 7904            102             MOV     R1, #4
+00A4 75F004          103             MOV     B, #4
+00A7 A4              104             MUL     AB
+00A8 C0E0            105             PUSH    ACC
+00AA C000            106             PUSH    0
+00AC                 107     find_symbol:
+00AC D0E0            108             POP     ACC
+00AE F8              109             MOV     R0, A
+00AF 20E012          110             JB              ACC.0, end_find_cycle
+                     111             
+00B2 908002          112             MOV     DPTR, #8002h
+00B5 74FF            113             MOV     A, #0FFh
+00B7 F0              114             MOVX    @DPTR, A
+00B8 D0E0            115             POP     ACC
+00BA C0E0            116             PUSH    ACC
+00BC 900033          117             MOV     DPTR, #Codes
+00BF 93              118             MOVC    A, @A+DPTR
+00C0 908001          119             MOV     DPTR, #8001h
+00C3 F0              120             MOVX    @DPTR, A
+                     121             
+                     122             
+00C4                 123     end_find_cycle:
+A51 MACRO ASSEMBLER  MAIN                                                                 05/20/2018 16:26:57 PAGE     3
+
+00C4 D0E0            124             POP     ACC
+00C6 04              125             INC     A
+00C7 C0E0            126             PUSH    ACC
+00C9 E8              127             MOV     A, R0
+00CA 03              128             RR              A
+00CB C0E0            129             PUSH    ACC
+00CD D9DD            130             DJNZ    R1, find_symbol
+                     131             
+00CF D0E0            132             POP     ACC
+00D1 D0E0            133             POP     ACC
+00D3 80C2            134             JMP     end_tkb
+                     135     
+                     136     
+00D5                 137     ANTI_BOUNCE_DELAY:
+00D5 53881F          138             ANL     88h, #timers_off
+00D8 758901          139             MOV     89h, #TC0_mode1_tmr
+00DB 758B67          140             MOV     TL1, #67h       ;wait for 0,03s 
+00DE 758DC5          141             MOV     TH1, #0C5h
+00E1 438850          142             ORL     88h, #timers_on
+00E4                 143     wait:   
+00E4 308FFD          144             JNB     TF1, wait
+00E7 22              145     RET     
+                     146     
+                     147     
+                     148     
+00E8                 149     PROGRAM_TIMER:
+00E8 53881F          150             ANL     88h, #timers_off
+00EB 758901          151             MOV     89h, #TC0_mode1_tmr
+00EE 758A00          152             MOV     TL0, #0h        ;wait for 0,06s 
+00F1 758C00          153             MOV     TH0, #0h
+00F4 438850          154             ORL     88h, #timers_on
+00F7 22              155     RET
+                     156     
+00F8                 157     MYINT:
+00F8 C0E0            158             PUSH    ACC
+00FA 0508            159             INC     8
+00FC E508            160             MOV     A, 8
+00FE B40F13          161             CJNE    A,#15,endint1
+0101 750800          162             MOV     8,#0
+0104 0509            163             INC     9
+0106 E509            164             MOV     A, 9
+0108 B43C03          165             CJNE    A,#60,static_out
+010B 750900          166             MOV     9, #0
+010E                 167     static_out:
+010E 90B000          168             MOV     DPTR, #0B000h
+0111 E509            169             MOV     A, 9
+0113 F0              170             MOVX    @DPTR, A
+0114                 171     endint1:
+0114 11E8            172             CALL    PROGRAM_TIMER
+0116 D0E0            173             POP     ACC
+0118 32              174     RETI
+                     175     END
+A51 MACRO ASSEMBLER  MAIN                                                                 05/20/2018 16:26:57 PAGE     4
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E               T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . . .  D ADDR   00E0H   A   
+ANTI_BOUNCE_DELAY. .  C ADDR   00D5H   A   
+ASKKEYBOARD. . . . .  C ADDR   0056H   A   
+B. . . . . . . . . .  D ADDR   00F0H   A   
+CARRY_ON . . . . . .  C ADDR   0079H   A   
+CODES. . . . . . . .  C ADDR   0033H   A   
+COLUMNASK. . . . . .  C ADDR   0060H   A   
+COLUMNS. . . . . . .  C ADDR   0030H   A   
+DPH. . . . . . . . .  D ADDR   0083H   A   
+DPL. . . . . . . . .  D ADDR   0082H   A   
+ENDINT1. . . . . . .  C ADDR   0114H   A   
+END_FIND_CYCLE . . .  C ADDR   00C4H   A   
+END_TKB. . . . . . .  C ADDR   0097H   A   
+FIND_SYMBOL. . . . .  C ADDR   00ACH   A   
+IE . . . . . . . . .  D ADDR   00A8H   A   
+INFCYCLE . . . . . .  C ADDR   0052H   A   
+INITIATE_COLUMNASK .  C ADDR   005CH   A   
+INITIATE_FIND_SYMBOL  C ADDR   00A2H   A   
+IP . . . . . . . . .  D ADDR   00B8H   A   
+IT0. . . . . . . . .  B ADDR   0088H.0 A   
+MYINT. . . . . . . .  C ADDR   00F8H   A   
+PROGRAM_TIMER. . . .  C ADDR   00E8H   A   
+READ_AGAIN . . . . .  C ADDR   006BH   A   
+SP . . . . . . . . .  D ADDR   0081H   A   
+START. . . . . . . .  C ADDR   003FH   A   
+STATIC_OUT . . . . .  C ADDR   010EH   A   
+TAKE_BUTTON_CODE . .  C ADDR   0087H   A   
+TC0_MODE1_CNT. . . .  N NUMB   000EH   A   
+TC0_MODE1_TMR. . . .  N NUMB   0001H   A   
+TC1_MODE1_TMR. . . .  N NUMB   0010H   A   
+TF1. . . . . . . . .  B ADDR   0088H.7 A   
+TH0. . . . . . . . .  D ADDR   008CH   A   
+TH1. . . . . . . . .  D ADDR   008DH   A   
+TIMERS_OFF . . . . .  N NUMB   001FH   A   
+TIMERS_ON. . . . . .  N NUMB   0050H   A   
+TL0. . . . . . . . .  D ADDR   008AH   A   
+TL1. . . . . . . . .  D ADDR   008BH   A   
+WAIT . . . . . . . .  C ADDR   00E4H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,105 @@
+A51 MACRO ASSEMBLER  MATRIX                                                               04/27/2018 23:11:39 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\matrix.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE matrix.a51 SET(SMALL) DEBUG PRINT(.\Listings\matrix.lst) OBJECT(.\Objects\
+                      matrix.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+  000F                 1     timers_off      EQU 00001111b 
+  000E                 2     TC0_mode1_cnt   EQU 00001110b ;counter mode
+  0001                 3     TC0_mode1_tmr   EQU 00000001b ;timer mode
+  0050                 4     timers_on       EQU 01010000b
+0000                   5     org 0   
+0000                   6     NumberTable:
+0000 1F                7             DB      00011111b
+0001 11                8             DB      00010001b
+0002 11                9             DB      00010001b
+0003 11               10             DB      00010001b
+0004 11               11             DB      00010001b
+0005 11               12             DB      00010001b
+0006 1F               13             DB      00011111b
+                      14             
+0007 0E               15             DB      00001110b
+0008 11               16             DB      00010001b
+0009 11               17             DB      00010001b
+000A 1F               18             DB      00011111b
+000B 11               19             DB      00010001b
+000C 11               20             DB      00010001b
+000D 11               21             DB      00010001b
+000E                  22     start:
+000E 7400             23     MOV     A, #0
+0010 908002           24     MOV     DPTR, #8002h
+0013 F0               25     MOVX    @DPTR, A
+0014 7800             26     MOV     R0, #0
+0016                  27     indicatecycle:
+0016 111A             28     CALL    INDICATE
+0018 80FC             29     JMP indicatecycle
+                      30     
+                      31     
+001A                  32     INDICATE:
+001A C000             33     PUSH    0
+001C C0E0             34     PUSH    ACC
+001E 04               35     INC     A
+001F 75F007           36     MOV     B,#7
+0022                  37     mulcycle:
+0022 A4               38     MUL     AB
+0023 D8FD             39     DJNZ    R0,mulcycle
+                      40     
+0025 7B0F             41     MOV r3,#15
+0027                  42     prog:
+0027 53880F           43             ANL     88h, #timers_off
+002A 758901           44             MOV     89h, #TC0_mode1_tmr
+002D 758A00           45             MOV     TL0, #00h ;wait for 0,065s 
+0030 758C00           46             MOV     TH0, #00h
+0033 438850           47             ORL     88h, #timers_on
+0036                  48     cycle1:
+0036 7400             49     MOV     A, #0
+0038                  50     cycle2:
+0038 900000           51     MOV     DPTR, #NumberTable
+003B 93               52     MOVC    A, @A+DPTR
+003C 04               53     INC     A
+003D B407F8           54     CJNE    A,#7,cycle2
+0040                  55     check:
+0040 308DF3           56             JNB     TF0, cycle1
+0043 DBE2             57             DJNZ    r3,prog
+A51 MACRO ASSEMBLER  MATRIX                                                               04/27/2018 23:11:39 PAGE     2
+
+0045 D0E0             58     POP     ACC
+0047 D000             59     POP     0
+0049 22               60     RET
+                      61     END
+A51 MACRO ASSEMBLER  MATRIX                                                               04/27/2018 23:11:39 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+CHECK. . . . . . .  C ADDR   0040H   A   
+CYCLE1 . . . . . .  C ADDR   0036H   A   
+CYCLE2 . . . . . .  C ADDR   0038H   A   
+INDICATE . . . . .  C ADDR   001AH   A   
+INDICATECYCLE. . .  C ADDR   0016H   A   
+MULCYCLE . . . . .  C ADDR   0022H   A   
+NUMBERTABLE. . . .  C ADDR   0000H   A   
+PROG . . . . . . .  C ADDR   0027H   A   
+START. . . . . . .  C ADDR   000EH   A   
+TC0_MODE1_CNT. . .  N NUMB   000EH   A   
+TC0_MODE1_TMR. . .  N NUMB   0001H   A   
+TF0. . . . . . . .  B ADDR   0088H.5 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIMERS_OFF . . . .  N NUMB   000FH   A   
+TIMERS_ON. . . . .  N NUMB   0050H   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,35 @@
+A51 MACRO ASSEMBLER  TEST                                                                 04/27/2018 11:24:37 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\test.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE test.a51 SET(SMALL) DEBUG PRINT(.\Listings\test.lst) OBJECT(.\Objects\test
+                      .obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0
+0000 7904              2     mov R1,#04h
+0002 7C30              3     mov R4,#30h 
+0004 90B000            4     mov DPTR,#0B000h 
+0007 E9                5     mov A,R1 
+0008 2C                6     add A,R4 
+0009 F0                7     movx @DPTR,A 
+000A 7400              8     mov A,#00h 
+000C 80FE              9     Con: jmp Con
+                      10     END
+A51 MACRO ASSEMBLER  TEST                                                                 04/27/2018 11:24:37 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+CON. . . . . . . .  C ADDR   000CH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

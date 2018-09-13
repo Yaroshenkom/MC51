@@ -1,0 +1,3 @@
+".\Objects\mainRGR.obj" 
+TO ".\Objects\RGR" 
+PRINT(".\Listings\RGR.m51")

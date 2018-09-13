@@ -1,0 +1,337 @@
+A51 MACRO ASSEMBLER  MATRIX                                                               05/15/2018 12:20:12 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\matrix.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE matrix.a51 SET(SMALL) DEBUG PRINT(.\Listings\matrix.lst) OBJECT(.\Objects\
+                      matrix.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+  000F                 1     timers_off      EQU 00001111b 
+  000E                 2     TC0_mode1_cnt   EQU 00001110b ;counter mode
+  0001                 3     TC0_mode1_tmr   EQU 00000001b ;timer mode
+  0050                 4     timers_on       EQU 01010000b
+0000                   5     org 0
+0000 0182              6     JMP     start
+0002                   7     NumberTable:
+0002 0E                8             DB      00001110b ;code for matrix
+0003 11                9             DB      00010001b
+0004 11               10             DB      00010001b
+0005 11               11             DB      00010001b
+0006 11               12             DB      00010001b
+0007 11               13             DB      00010001b
+0008 0E               14             DB      00001110b
+                      15                     
+0009 3F               16             DB      00111111b ;code for dynamic indication
+                      17                     
+000A 04               18             DB      00000100b
+000B 0C               19             DB      00001100b
+000C 04               20             DB      00000100b
+000D 04               21             DB      00000100b
+000E 04               22             DB      00000100b
+000F 04               23             DB      00000100b
+0010 1F               24             DB      00011111b
+                      25             
+0011 06               26             DB      00000110b
+                      27                     
+0012 0E               28             DB      00001110b
+0013 11               29             DB      00010001b
+0014 02               30             DB      00000010b
+0015 04               31             DB      00000100b
+0016 08               32             DB      00001000b
+0017 10               33             DB      00010000b
+0018 1F               34             DB      00011111b
+                      35                     
+0019 5B               36             DB      01011011b
+                      37                     
+001A 0E               38             DB      00001110b
+001B 11               39             DB      00010001b
+001C 01               40             DB      00000001b
+001D 02               41             DB      00000010b
+001E 01               42             DB      00000001b
+001F 11               43             DB      00010001b
+0020 0E               44             DB      00001110b
+                      45                     
+0021 4F               46             DB      01001111b
+                      47     
+0022 04               48             DB      00000100b
+0023 0C               49             DB      00001100b
+0024 14               50             DB      00010100b
+0025 1E               51             DB      00011110b
+0026 04               52             DB      00000100b
+0027 04               53             DB      00000100b
+0028 1F               54             DB      00011111b
+                      55                     
+0029 66               56             DB      01100110b
+                      57                     
+A51 MACRO ASSEMBLER  MATRIX                                                               05/15/2018 12:20:12 PAGE     2
+
+002A 1F               58             DB      00011111b
+002B 10               59             DB      00010000b
+002C 10               60             DB      00010000b
+002D 0E               61             DB      00001110b
+002E 01               62             DB      00000001b
+002F 11               63             DB      00010001b
+0030 0E               64             DB      00001110b
+                      65                     
+0031 6D               66             DB      01101101b
+                      67                     
+0032 02               68             DB      00000010b
+0033 04               69             DB      00000100b
+0034 08               70             DB      00001000b
+0035 1E               71             DB      00011110b
+0036 11               72             DB      00010001b
+0037 11               73             DB      00010001b
+0038 0E               74             DB      00001110b
+                      75                     
+0039 7D               76             DB      01111101b
+                      77                     
+003A 1F               78             DB      00011111b
+003B 02               79             DB      00000010b
+003C 04               80             DB      00000100b
+003D 04               81             DB      00000100b
+003E 04               82             DB      00000100b
+003F 04               83             DB      00000100b
+0040 04               84             DB      00000100b
+                      85                     
+0041 07               86             DB      00000111b
+                      87                     
+0042 0E               88             DB      00001110b
+0043 11               89             DB      00010001b
+0044 11               90             DB      00010001b
+0045 0E               91             DB      00001110b
+0046 11               92             DB      00010001b
+0047 11               93             DB      00010001b
+0048 0E               94             DB      00001110b
+                      95                     
+0049 7F               96             DB      01111111b
+                      97                     
+004A 0E               98             DB      00001110b
+004B 11               99             DB      00010001b
+004C 11              100             DB      00010001b
+004D 0F              101             DB      00001111b
+004E 02              102             DB      00000010b
+004F 04              103             DB      00000100b
+0050 08              104             DB      00001000b
+                     105     
+0051 6F              106             DB      01101111b
+                     107     
+0052 0E              108             DB      00001110b
+0053 11              109             DB      00010001b
+0054 11              110             DB      00010001b
+0055 1F              111             DB      00011111b
+0056 11              112             DB      00010001b
+0057 11              113             DB      00010001b
+0058 11              114             DB      00010001b
+                     115                     
+0059 77              116             DB      01110111b
+                     117             
+005A 1E              118             DB      00011110b
+005B 11              119             DB      00010001b
+005C 11              120             DB      00010001b
+005D 1E              121             DB      00011110b
+005E 11              122             DB      00010001b
+005F 11              123             DB      00010001b
+A51 MACRO ASSEMBLER  MATRIX                                                               05/15/2018 12:20:12 PAGE     3
+
+0060 1E              124             DB      00011110b
+                     125                     
+0061 7C              126             DB      01111100b
+                     127                     
+0062 0E              128             DB      00001110b
+0063 11              129             DB      00010001b
+0064 10              130             DB      00010000b
+0065 10              131             DB      00010000b
+0066 10              132             DB      00010000b
+0067 11              133             DB      00010001b
+0068 0E              134             DB      00001110b
+                     135                     
+0069 39              136             DB      00111001b
+                     137                     
+006A 1E              138             DB      00011110b
+006B 11              139             DB      00010001b
+006C 11              140             DB      00010001b
+006D 11              141             DB      00010001b
+006E 11              142             DB      00010001b
+006F 11              143             DB      00010001b
+0070 1E              144             DB      00011110b
+                     145                     
+0071 5E              146             DB      01011110b
+                     147                     
+0072 1F              148             DB      00011111b
+0073 10              149             DB      00010000b
+0074 10              150             DB      00010000b
+0075 1C              151             DB      00011100b
+0076 10              152             DB      00010000b
+0077 10              153             DB      00010000b
+0078 1F              154             DB      00011111b
+                     155                     
+0079 79              156             DB      01111001b
+                     157                     
+007A 1F              158             DB      00011111b
+007B 10              159             DB      00010000b
+007C 10              160             DB      00010000b
+007D 1C              161             DB      00011100b
+007E 10              162             DB      00010000b
+007F 10              163             DB      00010000b
+0080 10              164             DB      00010000b
+                     165                     
+0081 71              166             DB      01110001b
+                     167                     
+0082                 168     start:
+0082 74FF            169     MOV     A, #0FFh
+0084 908000          170     MOV     DPTR, #8000h
+0087 F0              171     MOVX    @DPTR, A
+                     172     
+0088 7400            173     MOV     A, #0
+008A 908001          174     MOV     DPTR, #8001h
+008D F0              175     MOVX    @DPTR, A
+008E                 176     indicatecycle1:
+008E 7910            177     MOV     R1, #16
+0090 7800            178     MOV     R0, #0
+0092                 179     indicatecycle2:
+0092 1199            180     CALL    INDICATE
+0094 08              181     INC     R0
+0095 D9FB            182     DJNZ    R1,indicatecycle2
+0097 80F5            183     JMP     indicatecycle1
+                     184     
+                     185     
+                     186     
+0099                 187     INDICATE:
+0099 C0E0            188     PUSH    ACC
+009B C001            189     PUSH    1
+A51 MACRO ASSEMBLER  MATRIX                                                               05/15/2018 12:20:12 PAGE     4
+
+009D C002            190     PUSH    2
+009F C003            191     PUSH    3
+00A1 C004            192     PUSH    4
+00A3 C005            193     PUSH    5
+00A5 AC81            194     MOV     R4, SP
+                     195     
+00A7 7B0F            196     MOV R3,#15
+00A9                 197     prog:
+00A9 53880F          198             ANL     88h, #timers_off
+00AC 758901          199             MOV     89h, #TC0_mode1_tmr
+00AF 758A00          200             MOV     TL0, #00h       ;wait for 0,065s 
+00B2 758C00          201             MOV     TH0, #00h
+00B5 438850          202             ORL     88h, #timers_on
+00B8                 203     cycle1:                                 ;initial settings for the current symbol
+00B8 8C81            204     MOV     SP, R4
+                     205     
+                     206     
+00BA 7400            207     MOV     A,#0
+00BC 90A006          208     MOV     DPTR, #0A006h
+00BF F0              209     MOVX    @DPTR, A
+00C0 E8              210     MOV     A, R0
+00C1 9408            211     SUBB    A, #8
+00C3 30D711          212     JNB     PSW.7, carry_on
+00C6 C2D7            213     CLR     PSW.7
+00C8 C001            214     PUSH    1
+00CA A900            215     MOV     R1, 0
+00CC 7401            216     MOV     A, #00000001b
+00CE                 217     rotate_cycle:
+00CE 23              218     RL              A
+00CF D9FD            219     DJNZ    R1, rotate_cycle
+00D1 90A006          220     MOV     DPTR, #0A006h
+00D4 F0              221     MOVX    @DPTR, A
+00D5 D001            222     POP     1
+                     223     
+                     224     
+00D7                 225     carry_on:
+00D7 E8              226     MOV     A, R0
+00D8 75F008          227     MOV     B,#8
+00DB A4              228     MUL     AB                              ;first line for matrix
+00DC C0E0            229     PUSH    ACC
+00DE 2407            230     ADD             A, #7
+00E0 FD              231     MOV     R5, A                   ;code for dynamic indication
+00E1 74BF            232     MOV     A,#10111111b    ;only one catode is active when we activate one line of the matrix
+00E3 C0E0            233     PUSH    ACC
+00E5 7907            234     MOV     R1, #7
+00E7                 235     cycle2:
+00E7 D0E0            236     POP     ACC
+00E9 908002          237     MOV     DPTR, #8002h    
+00EC F0              238     MOVX    @DPTR, A                ;activate catodes of current line
+00ED 03              239     RR              A
+00EE FA              240     MOV     R2, A
+                     241     
+00EF 900002          242     MOV     DPTR, #NumberTable
+00F2 D0E0            243     POP     ACC
+00F4 C0E0            244     PUSH    ACC
+00F6 93              245     MOVC    A, @A+DPTR
+00F7 908000          246     MOV     DPTR, #8000h    
+00FA F0              247     MOVX    @DPTR, A                ;activate anodes of current line
+00FB D0E0            248     POP     ACC
+00FD 05E0            249     INC     ACC
+00FF C0E0            250     PUSH    ACC
+                     251     
+0101 EA              252     MOV     A, R2
+0102 C0E0            253     PUSH    ACC
+                     254     
+0104 7400            255     MOV     A, #0
+A51 MACRO ASSEMBLER  MATRIX                                                               05/15/2018 12:20:12 PAGE     5
+
+0106 F0              256     MOVX    @DPTR, A
+                     257     
+0107 908002          258     MOV     DPTR, #8002h    
+010A 74FC            259     MOV     A, #11111100b   ;pick the first indicator
+010C F0              260     MOVX    @DPTR, A
+010D 900002          261     MOV     DPTR, #NumberTable
+0110 ED              262     MOV     A, R5
+0111 93              263     MOVC    A, @A+DPTR
+0112 908001          264     MOV     DPTR, #8001h
+0115 F0              265     MOVX    @DPTR, A                ;activate necessary segments
+0116 7400            266     MOV     A, #0
+0118 F0              267     MOVX    @DPTR, A
+                     268     
+0119 D9CC            269     DJNZ    R1, cycle2
+                     270     
+011B                 271     check:
+011B 308D9A          272             JNB     TF0, cycle1
+011E DB89            273             DJNZ    R3,prog
+0120 D0E0            274     POP     ACC
+0122 D0E0            275     POP     ACC
+0124 D005            276     POP     5
+0126 D004            277     POP     4
+0128 D003            278     POP     3
+012A D002            279     POP     2
+012C D001            280     POP     1
+012E D0E0            281     POP     ACC
+0130 22              282     RET
+                     283     END
+A51 MACRO ASSEMBLER  MATRIX                                                               05/15/2018 12:20:12 PAGE     6
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+CARRY_ON . . . . .  C ADDR   00D7H   A   
+CHECK. . . . . . .  C ADDR   011BH   A   
+CYCLE1 . . . . . .  C ADDR   00B8H   A   
+CYCLE2 . . . . . .  C ADDR   00E7H   A   
+INDICATE . . . . .  C ADDR   0099H   A   
+INDICATECYCLE1 . .  C ADDR   008EH   A   
+INDICATECYCLE2 . .  C ADDR   0092H   A   
+NUMBERTABLE. . . .  C ADDR   0002H   A   
+PROG . . . . . . .  C ADDR   00A9H   A   
+PSW. . . . . . . .  D ADDR   00D0H   A   
+ROTATE_CYCLE . . .  C ADDR   00CEH   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+START. . . . . . .  C ADDR   0082H   A   
+TC0_MODE1_CNT. . .  N NUMB   000EH   A   
+TC0_MODE1_TMR. . .  N NUMB   0001H   A   
+TF0. . . . . . . .  B ADDR   0088H.5 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIMERS_OFF . . . .  N NUMB   000FH   A   
+TIMERS_ON. . . . .  N NUMB   0050H   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

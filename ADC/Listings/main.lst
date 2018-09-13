@@ -1,0 +1,82 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 05/29/2018 11:13:19 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\main.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE main.a51 SET(SMALL) DEBUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\main
+                      .obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     org 0
+0000                   2     start:
+0000 7880              3             MOV     R0, #128 ;the analysis starts from the most significant bit
+0002 7400              4             MOV     A,#0    
+0004 90F000            5             MOV     DPTR, #0F000h 
+0007 F0                6             MOVX    @DPTR, A ;turn off the DAC
+0008 1132              7             CALL    DELAY ;need some time to setup necessary voltage on DAC
+000A 7908              8             MOV     R1, #8
+000C                   9     comparing:
+000C 48               10             ORL     A, R0
+000D F0               11             MOVX    @DPTR, A
+000E 1132             12             CALL    DELAY
+0010 209705           13             JB              P1.7, carry_on ;if DAC voltage is less than the measured one, then 
+                             write 1 in current bit of a result 
+0013 1122             14             CALL    INVERT_R0 ; if not, put 0 in the current bit
+0015 58               15             ANL     A, R0
+0016 1122             16             CALL    INVERT_R0
+0018                  17     carry_on:
+0018 112A             18             CALL    ROTATE_R0 ;get ready to fill next bit
+001A D9F0             19             DJNZ    R1, comparing ;go to next bit
+001C 90A000           20             MOV     DPTR, #0A000h ;show the result
+001F F0               21             MOVX    @DPTR, A
+0020 80DE             22             JMP     start
+                      23             
+0022                  24     INVERT_R0:
+0022 C0E0             25             PUSH    ACC
+0024 E8               26             MOV     A, R0
+0025 F4               27             CPL     A
+0026 F8               28             MOV     R0, A
+0027 D0E0             29             POP     ACC
+0029 22               30     RET
+                      31     
+002A                  32     ROTATE_R0:
+002A C0E0             33             PUSH    ACC
+002C E8               34             MOV     A, R0
+002D 03               35             RR              A
+002E F8               36             MOV     R0, A
+002F D0E0             37             POP     ACC
+0031 22               38     RET
+                      39     
+0032                  40     DELAY:
+0032 C002             41             PUSH    2
+0034 7AC8             42             MOV     R2,#200;
+0036                  43     wait:
+0036 DAFE             44             DJNZ    R2,wait
+0038 D002             45             POP     2
+003A 22               46     RET
+                      47     
+                      48     END
+A51 MACRO ASSEMBLER  MAIN                                                                 05/29/2018 11:13:19 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+CARRY_ON . . . . .  C ADDR   0018H   A   
+COMPARING. . . . .  C ADDR   000CH   A   
+DELAY. . . . . . .  C ADDR   0032H   A   
+INVERT_R0. . . . .  C ADDR   0022H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+ROTATE_R0. . . . .  C ADDR   002AH   A   
+START. . . . . . .  C ADDR   0000H   A   
+WAIT . . . . . . .  C ADDR   0036H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

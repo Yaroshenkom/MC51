@@ -1,0 +1,87 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 05/15/2018 10:24:28 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\main.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE main.a51 SET(SMALL) DEBUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\main
+                      .obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+  0020                 1     wr_adr          EQU 20h
+  00F5                 2     check_value EQU 0F5h
+  000F                 3     timers_off      EQU 00001111b 
+  000E                 4     TC0_mode1_cnt   EQU 00001110b ;counter mode
+  0001                 5     TC0_mode1_tmr   EQU 00000001b ;timer mode
+  0050                 6     timers_on       EQU 01010000b
+                       7             
+0000                   8     org 0000h
+0000                   9     Beginning:
+0000 7820             10             MOV     R0, #wr_adr
+0002 53880F           11             ANL     88h, #timers_off
+0005 75890E           12             MOV     89h, #TC0_mode1_cnt
+0008 758AFD           13             MOV     TL0, #253  ;wait 3 negative edges from INT0
+000B 758CFD           14             MOV     TH0, #253
+000E 438850           15             ORL     88h, #timers_on
+                      16             
+0011                  17     wait:
+0011 308DFD           18             JNB     TF0, wait
+                      19             
+0014 53880F           20             ANL     88h, #timers_off
+0017 758901           21             MOV     89h, #TC0_mode1_tmr
+001A 758ACF           22             MOV     TL0, #0CFh ;wait for 30ms 
+001D 758C8A           23             MOV     TH0, #8Ah
+0020 438850           24             ORL     88h, #timers_on
+                      25             
+0023                  26     check_cycle:
+0023 108D1A           27             JBC     TF0, exit
+0026 75A0FF           28             MOV     P2, #255
+0029 AAA0             29             MOV     R2, P2
+002B EA               30             MOV     A, R2
+002C C2D7             31             CLR     PSW.7
+002E 94F5             32             SUBB    A, #check_value ;if P2=0F5h then stop reading P2
+0030 600E             33             JZ              exit
+0032                  34     overflow_check:
+0032 E8               35             MOV     A, R0 ;if P2 isn't equal 0F5h then write it to memory from the 20h adress
+0033 C2D7             36             CLR     PSW.7
+0035 947F             37             SUBB    A, #7Fh
+0037 7002             38             JNZ     write   
+0039 7820             39             MOV     R0, #wr_adr     
+003B                  40     write:  
+003B A602             41             MOV     @R0, 2
+003D 08               42             INC     R0
+003E 80E3             43             SJMP    check_cycle
+0040                  44     exit:
+                      45     END
+                                     
+A51 MACRO ASSEMBLER  MAIN                                                                 05/15/2018 10:24:28 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+BEGINNING. . . . .  C ADDR   0000H   A   
+CHECK_CYCLE. . . .  C ADDR   0023H   A   
+CHECK_VALUE. . . .  N NUMB   00F5H   A   
+EXIT . . . . . . .  C ADDR   0040H   A   
+OVERFLOW_CHECK . .  C ADDR   0032H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+PSW. . . . . . . .  D ADDR   00D0H   A   
+TC0_MODE1_CNT. . .  N NUMB   000EH   A   
+TC0_MODE1_TMR. . .  N NUMB   0001H   A   
+TF0. . . . . . . .  B ADDR   0088H.5 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIMERS_OFF . . . .  N NUMB   000FH   A   
+TIMERS_ON. . . . .  N NUMB   0050H   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+WAIT . . . . . . .  C ADDR   0011H   A   
+WRITE. . . . . . .  C ADDR   003BH   A   
+WR_ADR . . . . . .  N NUMB   0020H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

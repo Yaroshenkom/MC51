@@ -1,0 +1,296 @@
+timers_off	EQU 00001111b 
+TC0_mode1_cnt	EQU 00001110b ;counter mode
+TC0_mode1_tmr	EQU 00000001b ;timer mode
+timers_on 	EQU 01010000b
+
+ORG 	0
+	JMP 	start
+ORG 3
+	JMP 	MYINT0
+ORG 13h
+	JMP 	MYINT1
+ORG		30h
+NumberTable:
+	DB 	00001110b ;code for matrix
+	DB 	00010001b
+	DB 	00010001b
+	DB 	00010001b
+	DB 	00010001b
+	DB 	00010001b
+	DB 	00001110b
+		
+	DB 	00000100b
+	DB 	00001100b
+	DB 	00000100b
+	DB 	00000100b
+	DB 	00000100b
+	DB 	00000100b
+	DB 	00011111b
+		
+	DB 	00001110b
+	DB 	00010001b
+	DB 	00000010b
+	DB 	00000100b
+	DB 	00001000b
+	DB 	00010000b
+	DB 	00011111b
+		
+	DB 	00001110b
+	DB 	00010001b
+	DB 	00000001b
+	DB 	00000010b
+	DB 	00000001b
+	DB 	00010001b
+	DB 	00001110b
+
+	DB 	00000100b
+	DB 	00001100b
+	DB 	00010100b
+	DB 	00011110b
+	DB 	00000100b
+	DB 	00000100b
+	DB 	00011111b
+		
+	DB 	00011111b
+	DB 	00010000b
+	DB 	00010000b
+	DB 	00001110b
+	DB 	00000001b
+	DB 	00010001b
+	DB 	00001110b
+		
+	DB 	00000010b
+	DB 	00000100b
+	DB 	00001000b
+	DB 	00011110b
+	DB 	00010001b
+	DB 	00010001b
+	DB 	00001110b
+		
+	DB 	00011111b
+	DB 	00000010b
+	DB 	00000100b
+	DB 	00000100b
+	DB 	00000100b
+	DB 	00000100b
+	DB 	00000100b
+		
+	DB 	00001110b
+	DB 	00010001b
+	DB 	00010001b
+	DB 	00001110b
+	DB 	00010001b
+	DB 	00010001b
+	DB 	00001110b
+		
+	DB 	00001110b
+	DB 	00010001b
+	DB 	00010001b
+	DB 	00001111b
+	DB 	00000010b
+	DB 	00000100b
+	DB 	00001000b
+	
+	
+start:
+	MOV 	IE, #10000101b  ;IE
+	MOV 	IP, #00000101b  ;IP
+	SETB 	IT1
+	SETB 	IT0
+	MOV 	SP, #20h
+	MOV 	8, #0	;elder digit of X
+	MOV 	9, #0	;younger digit of x
+	MOV 	10, #0	;elder digit of Y
+	MOV 	11, #0	;younger digit of Y
+	MOV 	12, #0	;X
+	MOV 	13, #0	;Y
+	MOV 	14, #0	;hundreds of result
+	MOV 	15, #0	;dozens of result
+	MOV 	16, #0	;units of result
+	MOV 	R1, #8
+	MOV 	R0, #12
+infcycle:
+	JMP 	infcycle
+	
+MYINT1:
+	PUSH	ACC 		
+	CALL 	ANTI_BOUNCE_DELAY
+	JB 		P3.3, endint1
+	INC 	@R1
+	CALL 	STATIC_SHOW
+	CALL 	ANTI_BOUNCE_DELAY
+endint1:
+	POP 	ACC
+RETI
+
+MYINT0:
+	PUSH	ACC 		
+	CALL 	ANTI_BOUNCE_DELAY
+	JB 		P3.2, endint0
+	INC 	R1
+	CJNE 	R1, #10, int0_check_12
+	INC 	R0
+	JMP 	int0_delay
+int0_check_12:
+	CJNE 	R1, #12, int0_delay
+	MOV 	R1, #8
+	MOV 	R0, #12
+	CALL 	CALCULATE
+indication:	
+	MOV 	R0,14
+	CALL 	INDICATE
+	MOV 	R0,15
+	CALL 	INDICATE
+	MOV 	R0,16
+	CALL 	INDICATE
+	JMP		indication
+int0_delay:
+	CALL 	ANTI_BOUNCE_DELAY
+endint0:
+	POP 	ACC
+RETI
+
+ANTI_BOUNCE_DELAY:
+	ANL 	88h, #timers_off
+	MOV 	89h, #TC0_mode1_tmr
+	MOV 	TL0, #0BFh 	;wait for 0,03s 
+	MOV 	TH0, #63h
+	ORL 	88h, #timers_on
+wait:	
+	JNB 	TF0, wait
+RET	
+
+STATIC_SHOW:
+	PUSH 	ACC
+	PUSH 	2
+	MOV 	A, @R1
+check_8:
+	CJNE 	R1, #8, check_9
+	JMP 	decimal_write
+check_9:
+	CJNE 	R1, #9, check_10
+	JMP 	ordinary_write
+check_10:
+	CJNE 	R1, #10, ordinary_write
+	JMP 	decimal_write
+decimal_write:
+	SWAP 	A
+	ANL 	A, #11110000b
+	MOV 	@R0, A
+	JMP 	indicate_static
+ordinary_write:
+	ANL 	A, #00001111b
+	MOV 	R2, A
+	MOV 	A, @R0
+	ANL 	A, #11110000b
+	ORL 	A, R2
+	MOV 	@R0, A
+indicate_static:
+	CJNE 	R0, #13, indicate_left
+	MOV 	DPTR, #0B000h
+	JMP 	show
+indicate_left:
+	MOV 	DPTR, #0A000h
+show:
+	MOVX 	@DPTR, A
+	POP 	2
+	POP 	ACC
+RET
+
+CALCULATE:
+	PUSH 	ACC
+	PUSH 	0
+	PUSH 	1
+	PUSH 	2
+	MOV 	R1, #2
+	MOV 	R0, #16
+	MOV 	A, 12
+	MOV 	B, 13
+	MUL 	AB
+	ADD		A, 13
+convert_to_bcd:
+	MOV 	B, #10
+	DIV 	AB
+	MOV 	@R0, B
+	DEC 	R0
+	DJNZ 	R1, convert_to_bcd
+	MOV 	14, A
+	POP 	2
+	POP 	1
+	POP 	0
+	POP 	ACC
+RET
+
+
+
+;==================================================
+INDICATE:
+PUSH 	ACC
+PUSH 	1
+PUSH 	2
+PUSH	3
+PUSH	4
+PUSH 	5
+MOV 	R4, SP
+
+MOV R3,#15
+prog:
+	ANL 	88h, #timers_off
+	MOV 	89h, #TC0_mode1_tmr
+	MOV 	TL0, #00h 	;wait for 0,065s 
+	MOV 	TH0, #00h
+	ORL 	88h, #timers_on
+cycle1: 				;initial settings for the current symbol
+MOV 	SP, R4
+
+
+carry_on:
+MOV 	A, R0
+MOV 	B,#7
+MUL 	AB 				;first line for matrix
+PUSH 	ACC
+MOV 	A,#10111111b	;only one catode is active when we activate one line of the matrix
+PUSH 	ACC
+MOV 	R1, #7
+cycle2:
+POP 	ACC
+MOV 	DPTR, #8002h	
+MOVX 	@DPTR, A		;activate catodes of current line
+RR 		A
+MOV 	R2, A
+
+MOV 	DPTR, #NumberTable
+POP 	ACC
+PUSH 	ACC
+MOVC	A, @A+DPTR
+MOV 	DPTR, #8000h	
+MOVX 	@DPTR, A		;activate anodes of current line
+POP 	ACC
+INC 	ACC
+PUSH 	ACC
+
+MOV 	A, R2
+PUSH 	ACC
+
+MOV 	A, #0
+MOVX	@DPTR, A
+
+DJNZ 	R1, cycle2
+
+check:
+	JNB 	TF0, cycle1
+	DJNZ	R3,prog
+POP 	ACC
+POP 	ACC
+POP 	5
+POP 	4
+POP 	3
+POP 	2
+POP 	1
+POP 	ACC
+RET
+;==================================================
+
+
+
+END

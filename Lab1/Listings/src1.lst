@@ -1,0 +1,70 @@
+A51 MACRO ASSEMBLER  SRC1                                                                 04/03/2018 10:31:16 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\src1.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE src1.a51 SET(SMALL) DEBUG PRINT(.\Listings\src1.lst) OBJECT(.\Objects\src1
+                      .obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     org 0000h ;start program from adr 0
+0000 7D20              2                     MOV     R5, #20h ;initial adr for recorded bytes
+0002                   3             Check1:
+0002 74F5              4                     MOV     A, #0F5h    
+0004 7590FF            5                     MOV     P1, #11111111b
+0007 A890              6                     MOV     R0, P1
+0009 98                7                     SUBB    A, R0  ;if P1=0F5h, we won't check P2
+000A 60F6              8                     JZ              Check1
+                       9                     
+000C 75A09D           10                     MOV     P2, #10011101b 
+000F A8A0             11                     MOV     R0, P2
+0011 7903             12                     MOV     R1, #3 ;R1 points on R3
+0013 7B00             13                     MOV     R3, #0 ;1-counter for least significant tetrade
+0015 7C00             14                     MOV     R4, #0 ;1-counter for most significant tetrade
+0017 E8               15                     MOV     A, R0
+0018 7A08             16                     MOV     R2, #8 ;one shift for everey bit
+001A                  17             cnt:
+001A BA0401           18                     CJNE    R2, #4, cmp ;calculate amount of 1 for LST (R2>4) or MST (R2<4)
+001D 09               19                     INC     R1
+001E                  20             cmp:
+001E 30E001           21                     JNB     ACC.0, back
+0021                  22             m2:
+0021 07               23                     INC     @R1 ;if checked bit=1, then increase necessary counter
+0022                  24             back:   
+0022 1A               25                     DEC     R2
+0023 03               26                     RR              A ;check next bit in the next cycle
+0024 BA00F3           27                     CJNE    R2, #0, cnt
+                      28                     
+0027 EC               29                     MOV     A, R4
+0028 9B               30                     SUBB    A, R3
+0029 50D7             31                     JNC     Check1 ;if R4<R3 record byte from P2
+002B ED               32                     MOV     A, R5
+002C F9               33                     MOV     R1, A
+002D E8               34                     MOV     A, R0
+002E F7               35                     MOV     @R1, A ;the next recorded byte will be record in 21h and so on...
+002F 0D               36                     INC     R5
+0030 0102             37                     AJMP    Check1 ;start the whole cycle again
+                      38     end
+A51 MACRO ASSEMBLER  SRC1                                                                 04/03/2018 10:31:16 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+BACK . . . . . . .  C ADDR   0022H   A   
+CHECK1 . . . . . .  C ADDR   0002H   A   
+CMP. . . . . . . .  C ADDR   001EH   A   
+CNT. . . . . . . .  C ADDR   001AH   A   
+M2 . . . . . . . .  C ADDR   0021H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\interruptions" 
+PRINT(".\Listings\interruptions.m51")

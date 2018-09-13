@@ -1,0 +1,74 @@
+A51 MACRO ASSEMBLER  LAB1STAND                                                            05/27/2018 17:02:20 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\lab1stand.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE lab1stand.a51 SET(SMALL) DEBUG PRINT(.\Listings\lab1stand.lst) OBJECT(.\Ob
+                      jects\lab1stand.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     org     0000h
+                       2     
+0000 7802              3     MOV     R0, #2
+0002 7903              4     MOV     R1, #3h
+0004 7A02              5     MOV     R2, #2
+0006 7C4A              6     MOV     R4, #4Ah
+0008                   7     begin:
+0008 7400              8     MOV     A, #0
+000A 90A000            9     MOV     DPTR,#0A000h
+000D F0               10     MOVX    @DPTR, A
+                      11     
+000E E8               12     MOV     A, R0
+000F 90B000           13     MOV     DPTR,#0B000h    
+0012 F0               14     MOVX    @DPTR, A
+                      15     
+0013                  16     cycle1:
+0013 29               17     ADD     A, R1
+0014 1127             18     CALL    ZAD
+0016 F0               19     MOVX    @DPTR, A
+0017 B504F9           20     CJNE    A, 4, cycle1
+                      21     
+001A 90A000           22     MOV     DPTR,#0A000h
+001D F0               23     MOVX    @DPTR, A
+                      24     
+001E                  25     cycle2:
+001E 9A               26     SUBB    A, R2
+001F 1127             27     CALL    ZAD
+0021 F0               28     MOVX    @DPTR, A
+0022 B500F9           29     CJNE    A, 0, cycle2
+0025 80E1             30     JMP             begin
+                      31     
+0027                  32     ZAD: 
+0027 C001             33     PUSH    1
+0029 C002             34     PUSH    2
+002B                  35     C1:
+002B 79FF             36     mov R1,#0FFh
+002D 7AFF             37     C2: mov R2,#0FFh
+002F DAFE             38     C4: djnz R2, C4
+0031 D9FA             39     djnz R1, C2
+0033 D002             40     POP     2
+0035 D001             41     POP     1
+0037 22               42     ret
+                      43     END
+A51 MACRO ASSEMBLER  LAB1STAND                                                            05/27/2018 17:02:20 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+BEGIN. . . . . . .  C ADDR   0008H   A   
+C1 . . . . . . . .  C ADDR   002BH   A   
+C2 . . . . . . . .  C ADDR   002DH   A   
+C4 . . . . . . . .  C ADDR   002FH   A   
+CYCLE1 . . . . . .  C ADDR   0013H   A   
+CYCLE2 . . . . . .  C ADDR   001EH   A   
+ZAD. . . . . . . .  C ADDR   0027H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

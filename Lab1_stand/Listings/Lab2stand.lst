@@ -1,0 +1,67 @@
+A51 MACRO ASSEMBLER  LAB2STAND                                                            04/27/2018 14:57:03 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Lab2stand.obj
+ASSEMBLER INVOKED BY: D:\Keil\C51\BIN\A51.EXE Lab2stand.a51 SET(SMALL) DEBUG PRINT(.\Listings\Lab2stand.lst) OBJECT(.\Ob
+                      jects\Lab2stand.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+  000F                 1     timers_off      EQU 00001111b 
+  000E                 2     TC0_mode1_cnt   EQU 00001110b ;counter mode
+  0001                 3     TC0_mode1_tmr   EQU 00000001b ;timer mode
+  0050                 4     timers_on       EQU 01010000b
+0000                   5     org 0   
+0000                   6             start:
+0000 7401              7     mov a,#1
+0002 908000            8     MOV dptR, #8000h
+0005 F0                9     MOVx @dptr,a
+0006 743F             10     MOV a,#00111111b
+0008 908002           11     MOV dptR, #8002h
+000B F0               12     MOVx @dptr,a
+000C 1118             13     CALL    WAIT
+                      14             
+000E 7400             15     MOV a,#0
+0010 908000           16     MOV dptR, #8000h
+0013 F0               17     MOVx @dptr,a
+0014 1118             18     CALL WAIT
+0016 80E8             19     jmp start
+0018                  20     WAIT:   
+0018 7B0F             21             MOV r3,#15
+001A                  22     prog:
+001A 53880F           23             ANL     88h, #timers_off
+001D 758901           24             MOV     89h, #TC0_mode1_tmr
+0020 758A00           25             MOV     TL0, #00h ;wait for 30ms 
+0023 758C00           26             MOV     TH0, #00h
+0026 438850           27             ORL     88h, #timers_on
+0029                  28     check:
+0029 308DFD           29             JNB     TF0, check
+002C DBEC             30             DJNZ    r3,prog
+002E 22               31     RET
+                      32     end
+A51 MACRO ASSEMBLER  LAB2STAND                                                            04/27/2018 14:57:03 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+CHECK. . . . . . .  C ADDR   0029H   A   
+PROG . . . . . . .  C ADDR   001AH   A   
+START. . . . . . .  C ADDR   0000H   A   
+TC0_MODE1_CNT. . .  N NUMB   000EH   A   
+TC0_MODE1_TMR. . .  N NUMB   0001H   A   
+TF0. . . . . . . .  B ADDR   0088H.5 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIMERS_OFF . . . .  N NUMB   000FH   A   
+TIMERS_ON. . . . .  N NUMB   0050H   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+WAIT . . . . . . .  C ADDR   0018H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
